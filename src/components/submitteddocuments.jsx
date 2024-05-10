@@ -7,16 +7,15 @@ const Submitteddocuments = () => {
     <>
       <div>
         <Header />
-      
       </div>
     </>
   );
 };
 
 const tempdata = [
-  { price: 525, product: "Phone", status: "done" },
-  { price: 999, product: "Laptop", status: "progress" },
-  { price: 525, product: "Table", status: "queue" },
+  { price: 525, product: "Phone", status: "done",id:4547 },
+  { price: 999, product: "Laptop", status: "progress",id:7487 },
+  { price: 525, product: "Table", status: "queue",id:7584 },
 ];
 
 const Header = () => {
@@ -26,6 +25,7 @@ const Header = () => {
         {/* Header */}
         <div className="bg-gray-800 text-white py-4 rounded-t-lg px-4">
           <div className="container mx-auto flex justify-between items-center">
+            <h1 className="text-lg font-semibold">ID</h1>
             <h1 className="text-lg font-semibold">Product</h1>
             <h1 className="text-lg font-semibold">Price</h1>
             <h1 className="text-lg font-semibold">Status</h1>
@@ -33,7 +33,7 @@ const Header = () => {
         </div>
 
         <List_of_ele data={tempdata} />
-        <Button text={"Print Document"}/>
+        <Button text={"Print Document"} />
       </div>
     </div>
   );
@@ -50,6 +50,7 @@ const List_of_ele = ({ data }) => {
               product={obj.product}
               price={obj.price}
               status={obj.status}
+              id={obj.id}
             />
           );
         })}
@@ -58,8 +59,7 @@ const List_of_ele = ({ data }) => {
   );
 };
 
-
-const Documnets = ({ product, price, status }) => {
+const Documnets = ({ id, product, price, status }) => {
   const [curstatus, setstatus] = useState({});
   useEffect(() => {
     console.log("dajd");
@@ -96,6 +96,7 @@ const Documnets = ({ product, price, status }) => {
   return (
     <div>
       <div className="bg-white rounded-lg shadow-md p-6 mb-4 flex justify-between items-center ">
+        <h2 className="text-lg font-semibold ">{id}</h2>
         <h2 className="text-lg font-semibold">{product}</h2>
         <p className="text-gray-700">${price}</p>
 
@@ -111,11 +112,9 @@ const Documnets = ({ product, price, status }) => {
   );
 };
 
-
-
-
 Submitteddocuments.propTypes = {};
 Documnets.propTypes = {
+  id: PropTypes.number,
   product: PropTypes.string,
   price: PropTypes.number,
   status: PropTypes.string,
