@@ -1,8 +1,9 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 const Header = () => {
   const [open, setOpen] = useState(false);
-
+  // const navigate = useNavigate();
   return (
     <div className="container">
       <div className="relative -mx-4 flex items-center justify-between">
