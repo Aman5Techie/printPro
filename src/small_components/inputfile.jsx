@@ -15,7 +15,7 @@ const Inputfile = ({ setfile }) => {
         <span className="mt-2 text-base leading-normal">Select a file</span>
         <input
           type="file"
-          accept=".pdf,.doc,.docx"
+          accept="application/pdf"
           className="hidden"
           onChange={(e) => {
             setfile(e.target.files[0]);

@@ -1,15 +1,69 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
+import axios from "axios";
+import { useEffect, useState } from "react";
+
 import { useNavigate } from "react-router-dom";
+
+import { toast } from "react-toastify";
+import { signup, userinfo } from "../rotues";
 
 const Signup = () => {
   const [data, setdata] = useState({});
   const [btn, setbtn] = useState(null);
+  const [color, setcolor] = useState(["", ""]);
   const navigate = useNavigate();
-  const formSubmit = (event) => {
-    const user_data = {...data,role:btn}
-    console.log(user_data);
+
+  useEffect(() => {
+    async function get_data() {
+      const bearer_token = localStorage.getItem("authorization");
+      if (bearer_token) {
+        const { data } = await axios.get(userinfo, {
+          headers: { "authorization": bearer_token },
+        });
+        if(data.data.role === "user"){
+          navigate("/seedocumnets");
+        }else{
+          navigate("/printout");
+        }
+      }
+    }
+    get_data();
+  }, []);
+
+  const formSubmit = async (event) => {
     event.preventDefault();
+    if (data.confirmpassword !== data.password || btn == null) {
+      if (btn == null) {
+        toast.error("Choose Role");
+      }
+      toast.error("Passwords Donot match");
+      return;
+    }
+    const user_data = { ...data, role: btn };
+    delete user_data.confirmpassword;
+    try {
+      const obj = await axios.post(signup, user_data);
+      if (obj.data.status) {
+        localStorage.setItem("authorization", `Bearer ${obj.data.token}`);
+        if (btn == "user") {
+          navigate("/seedocumnets");
+          return;
+        }
+        navigate("/printout");
+      }
+    } catch (error) {
+      toast.error(error.response.data.msg);
+
+      return;
+    }
+  };
+
+  const clickedbtn = (btn) => {
+    const usecolor = "text-white bg-gradient-to-br from-cyan-500 to-blue-500 ";
+    if (btn == 0) {
+      setcolor([usecolor, ""]);
+      return;
+    }
+    setcolor(["", usecolor]);
   };
 
   const changebtn = (type) => {
@@ -32,7 +86,6 @@ const Signup = () => {
             src="https://cdn.tailgrids.com/2.0/image/assets/images/logo/logo-white.svg"
             alt="logo"
           />
-          
         </a>
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -122,15 +175,33 @@ const Signup = () => {
               </div>
               <div className="flex space-x-28 ">
                 <div className="px-9">
-                  <div name="user" onClick={()=>{changebtn("user")}} className="relative inline-flex items-center  justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
-                    <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                  <div
+                    name="user"
+                    onClick={() => {
+                      changebtn("user");
+                      clickedbtn(0);
+                    }}
+                    className="relative inline-flex items-center  justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800"
+                  >
+                    <span
+                      className={` ${color[0]} relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0`}
+                    >
                       User
                     </span>
                   </div>
                 </div>
 
-                <div name="seller"  onClick={()=>{changebtn("seller")}} className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
-                  <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                <div
+                  name="seller"
+                  onClick={() => {
+                    changebtn("seller");
+                    clickedbtn(1);
+                  }}
+                  className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800"
+                >
+                  <span
+                    className={` ${color[1]} relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0`}
+                  >
                     Seller
                   </span>
                 </div>

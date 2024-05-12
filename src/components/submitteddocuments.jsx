@@ -62,7 +62,6 @@ const List_of_ele = ({ data }) => {
 const Documnets = ({ id, product, price, status }) => {
   const [curstatus, setstatus] = useState({});
   useEffect(() => {
-    console.log("dajd");
     setstatus(getStatusStyle(status));
   }, [status]);
   const getStatusStyle = (status) => {
@@ -120,7 +119,7 @@ Documnets.propTypes = {
   status: PropTypes.string,
 };
 List_of_ele.propTypes = {
-  data: PropTypes.object,
+  data: PropTypes.array,
 };
 
 export default Submitteddocuments;

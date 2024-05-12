@@ -1,8 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import Logout_btn from "../small_components/logoutbtn";
+import SignupBtn from "../small_components/signup_btn";
 const Header = () => {
   const [open, setOpen] = useState(false);
+  const [login, setlogin] = useState(false);
+  const [reloade, setreloade] = useState(false);
+  const location = useLocation();
+  const checkToken = () => {
+    const bearer_token = localStorage.getItem("authorization");
+    if (bearer_token) {
+      setlogin(true);
+    } else {
+      setlogin(false);
+    }
+  };
+  useEffect(() => {
+    checkToken();
+  }, [location.pathname]);
+
   // const navigate = useNavigate();
   return (
     <div className="container">
@@ -48,21 +65,11 @@ const Header = () => {
               </ul>
             </nav>
           </div>
-          <div className="hidden justify-end pr-16 sm:flex lg:pr-0">
-            <a
-              href="/#"
-              className="px-7 py-3 text-base font-medium text-dark hover:text-primary dark:text-white"
-            >
-              Sign in
-            </a>
-
-            <a
-              href="/#"
-              className="rounded-lg bg-[#1C3FB7] px-7 py-3 text-base font-medium text-white hover:bg-opacity-90"
-            >
-              Sign Up
-            </a>
-          </div>
+          {login == false ? (
+            <SignupBtn />
+          ) : (
+            <Logout_btn reloade={setreloade} load={reloade} />
+          )}
         </div>
       </div>
     </div>

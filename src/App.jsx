@@ -7,21 +7,24 @@ import Dashboard from "./pages/dashboard";
 import Printout from "./pages/printout";
 import Signup from "./pages/signup";
 import Login from "./pages/login";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
     <>
-      <Header />
       <BrowserRouter>
+        <Header />
         <Routes>
-          <Route path="/users" element={<Frontpage />} />
+          <Route path="/seedocumnets" element={<Frontpage />} />
           <Route path="/print" element={<Printdocs />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/signin" element={<Printout />} />
+          <Route path="/printout" element={<Printout />} />
           <Route path="/login" element={<Login />} />
         </Routes>
       </BrowserRouter>
+      <ToastContainer />
     </>
   );
 }

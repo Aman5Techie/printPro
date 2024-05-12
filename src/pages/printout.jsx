@@ -1,6 +1,10 @@
-import React from "react";
-import PropTypes from "prop-types";
 import Downloadbutton from "../small_components/downloadbutton";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { userinfo } from "../rotues";
+
+import PropTypes from "prop-types";
 
 const temp_data = [
   { id: 5685, product: "CSE120", file: "file", paid: "sucess", status: "sss" },
@@ -16,6 +20,24 @@ const temp_data = [
 ];
 
 const Printout = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    async function get_data() {
+      const bearer_token = localStorage.getItem("authorization");
+      if (bearer_token) {
+        const { data } = await axios.get(userinfo, {
+          headers: { authorization: bearer_token },
+        });
+        if (data.data.role !== "seller") {
+          localStorage.removeItem("authorization");
+          navigate("/login");
+        }
+      }else{
+        navigate("/login")
+      }
+    }
+    get_data();
+  }, []);
   return (
     <div>
       <div className="bg-gray-100 max-w-124 py-10 px-52  ">
@@ -78,5 +100,8 @@ const Documents = ({ id, product, file, status, paid }) => {
 };
 
 Printout.propTypes = {};
+List_of_ele.propTypes = {
+  data : PropTypes.array
+};
 
 export default Printout;

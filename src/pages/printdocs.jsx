@@ -3,6 +3,8 @@ import { Document, Page, pdfjs } from "react-pdf";
 import Inputfile from "../small_components/inputfile";
 import Loading from "../small_components/loading";
 import Pdfviewer from "../small_components/pdfviewer";
+import axios from "axios";
+import { upload } from "../rotues";
 const Printdocs = () => {
   pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
   const [file, setfile] = useState(null);
@@ -10,11 +12,20 @@ const Printdocs = () => {
   const [pages, setpage] = useState(0);
   const [amount, setamount] = useState(null);
 
-  function submitform(event) {
-    console.log(pages);
+  async function submitform(event) {
     event.preventDefault();
-    console.log(name);
-    console.log(file);
+    const formdata = new FormData();
+    formdata.append("title",name);
+    formdata.append("pdf",file);
+    try {
+      console.log(formdata);
+      const {data} = await axios.post(upload,formdata);
+      console.log(data);
+      
+    } catch (error) {
+      console.log(error);
+    }
+
   }
   function onDocumentLoadSuccess({ numPages }) {
     setpage(numPages);
@@ -65,22 +76,22 @@ const Printdocs = () => {
               )}
             </div>
             <div className="flex justify-center space-x-4 py-2">
-              <button
+              <div
                 onClick={() => {
                   setamount(pages * 2);
                 }}
                 className="text-white  bg-[#2D3436] font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 focus:outline-none focus:ring-4 focus:ring-gray-500 "
               >
                 @2 Rs
-              </button>
-              <button
+              </div>
+              <div
                 onClick={() => {
                   setamount(pages * 5);
                 }}
                 className="text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
               >
                 @5 Rs
-              </button>
+              </div>
             </div>
             <div className="flex justify-center py-5 ">
               {file == null || amount == null ? (

@@ -1,9 +1,23 @@
 import React from "react";
 import PropTypes from "prop-types";
+import axios from "axios";
+import { getPdf } from "../rotues";
+import {saveAs} from "file-saver"
 
 const Downloadbutton = () => {
+  async function onClick() {
+    const { data } = await axios.get(getPdf);
+    const buffer = data.data.data.data;
+    const base64String = buffer.toString('base64');
+    const blob = new Blob([...buffer], { type: "application/pdf" });
+    saveAs(blob,"output.pdf");
+    console.log(base64String);
+  }
   return (
-    <button className="Btn flex items-center justify-center bg-gray-900 rounded-full w-12 h-12 shadow-md cursor-pointer relative transition duration-300 hover:bg-purple-600">
+    <button
+      onClick={onClick}
+      className="Btn flex items-center justify-center bg-gray-900 rounded-full w-12 h-12 shadow-md cursor-pointer relative transition duration-300 hover:bg-purple-600"
+    >
       <svg
         className="svgIcon fill-current text-purple-300"
         viewBox="0 0 384 512"
@@ -14,8 +28,7 @@ const Downloadbutton = () => {
       <span
         className="tooltip absolute right-0 opacity-0 bg-gray-900 text-white px-2 py-1 rounded whitespace-no-wrap transition duration-200 pointer-events-none"
         style={{ right: -105 }}
-      >
-      </span>
+      ></span>
     </button>
   );
 };

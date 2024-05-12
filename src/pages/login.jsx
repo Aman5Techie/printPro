@@ -1,18 +1,74 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { login, userinfo } from "../rotues";
 
 const Login = () => {
   const [data, setdata] = useState({});
   const navigate = useNavigate();
-  const formSubmit = (event) => {
-    event.preventDefault();
-    console.log(data);
-  };
-  useEffect(()=>{
+  const [btn, setbtn] = useState(null);
+  const [color, setcolor] = useState(["", ""]);
 
-  },[])
+  useEffect(() => {
+    async function get_data() {
+      const bearer_token = localStorage.getItem("authorization");
+      if (bearer_token) {
+        const { data } = await axios.get(userinfo, {
+          headers: { authorization: bearer_token },
+        });
+        if (data.data.role === "user") {
+          navigate("/seedocumnets");
+        } else {
+          navigate("/printout");
+        }
+      }
+    }
+    get_data();
+  }, []);
+
+  const formSubmit = async (event) => {
+    event.preventDefault();
+    if (btn == null) {
+      toast.error("Choose Role");
+      return;
+    }
+
+    const user_data = { ...data, role: btn };
+    console.log(user_data);
+    try {
+      const obj = await axios.post(login, user_data);
+      if (obj.data.status) {
+        localStorage.setItem("authorization", `Bearer ${obj.data.token}`);
+        if (btn == "user") {
+          navigate("/seedocumnets");
+          return;
+        }
+        navigate("/printout");
+      }
+    } catch (error) {
+      toast.error(error.response.data.msg);
+
+      return;
+    }
+  };
+
   const changedata = (event) => {
     setdata({ ...data, [event.target.name]: event.target.value });
+  };
+  // sjknckalsclksaklcnklsanc
+
+  const clickedbtn = (btn) => {
+    const usecolor = "text-white bg-gradient-to-br from-cyan-500 to-blue-500 ";
+    if (btn == 0) {
+      setcolor([usecolor, ""]);
+      return;
+    }
+    setcolor(["", usecolor]);
+  };
+
+  const changebtn = (type) => {
+    setbtn(type);
   };
 
   return (
@@ -78,6 +134,39 @@ const Login = () => {
                   }}
                 />
               </div>
+              <div className="flex space-x-28 ">
+                <div className="px-9">
+                  <div
+                    name="user"
+                    onClick={() => {
+                      changebtn("user");
+                      clickedbtn(0);
+                    }}
+                    className="relative inline-flex items-center  justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800"
+                  >
+                    <span
+                      className={` ${color[0]} relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0`}
+                    >
+                      User
+                    </span>
+                  </div>
+                </div>
+
+                <div
+                  name="seller"
+                  onClick={() => {
+                    changebtn("seller");
+                    clickedbtn(1);
+                  }}
+                  className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800"
+                >
+                  <span
+                    className={` ${color[1]} relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0`}
+                  >
+                    Seller
+                  </span>
+                </div>
+              </div>
 
               <div className="flex items-start">
                 <div className="flex items-center h-5">
@@ -114,7 +203,7 @@ const Login = () => {
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                 Donot have an account?{" "}
                 <a
-                  onClick={(e) => {
+                  onClick={() => {
                     navigate("/signup");
                   }}
                   className="font-medium text-primary-600 hover:underline dark:text-primary-500"
