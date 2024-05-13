@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Button from "../small_components/button";
+import axios from "axios";
+import { getAhead, getOrders } from "../rotues";
+import loading from "../assets/spinner.gif";
+import Loading from "../small_components/loading";
 
 const Submitteddocuments = () => {
   return (
@@ -12,12 +16,6 @@ const Submitteddocuments = () => {
   );
 };
 
-const tempdata = [
-  { price: 525, product: "Phone", status: "done",id:4547 },
-  { price: 999, product: "Laptop", status: "progress",id:7487 },
-  { price: 525, product: "Table", status: "queue",id:7584 },
-];
-
 const Header = () => {
   return (
     <div className="bg-gray-100 max-w-110 py-10 px-52  ">
@@ -27,58 +25,83 @@ const Header = () => {
           <div className="container mx-auto flex justify-between items-center">
             <h1 className="text-lg font-semibold">ID</h1>
             <h1 className="text-lg font-semibold">Product</h1>
-            <h1 className="text-lg font-semibold">Price</h1>
-            <h1 className="text-lg font-semibold">Status</h1>
+            <div className="flex space-x-32 px-5 ">
+              <h1 className="text-lg font-semibold">Price</h1>
+
+              <h1 className="text-lg font-semibold">Ahead</h1>
+              <h1 className="text-lg font-semibold">Status</h1>
+            </div>
           </div>
         </div>
 
-        <List_of_ele data={tempdata} />
+        <List_of_ele />
         <Button text={"Print Document"} />
       </div>
     </div>
   );
 };
 
-const List_of_ele = ({ data }) => {
+const List_of_ele = () => {
+  const [loaded, setloaded] = useState(null);
+
+  useEffect(() => {
+    const orders = async () => {
+      const token = localStorage.getItem("authorization");
+
+      const { data } = await axios.get(getOrders, {
+        headers: { authorization: token },
+      });
+      setloaded(data.user);
+    };
+    orders();
+  }, []);
+
   return (
     <>
-      <div className="container mx-auto">
-        {data.map((obj, index) => {
-          return (
-            <Documnets
-              key={index}
-              product={obj.product}
-              price={obj.price}
-              status={obj.status}
-              id={obj.id}
-            />
-          );
-        })}
-      </div>
+      {loaded == null ? (
+        <div>
+          <img src={loading} alt="load" />
+        </div>
+      ) : (
+        <div className="container mx-auto">
+          {loaded.map((obj, index) => {
+            return <Documnets key={index} data={obj} />;
+          })}
+        </div>
+      )}
     </>
   );
 };
 
-const Documnets = ({ id, product, price, status }) => {
+const Documnets = ({ data }) => {
   const [curstatus, setstatus] = useState({});
+  const [ahead, setahead] = useState(null);
+
   useEffect(() => {
-    setstatus(getStatusStyle(status));
-  }, [status]);
+    setstatus(getStatusStyle(data.status));
+    console.log(data);
+    const _ahead = async()=>{
+      const aheadObj = await axios.post(getAhead,{orderId : data._id})
+      setahead(aheadObj.data.items);
+    }
+    _ahead();
+  }, [data]);
+
   const getStatusStyle = (status) => {
     switch (status) {
       case "done":
         return {
           color: "text-green-600",
           backgroundColor: "bg-green-200",
-          text: "Done",
+          text: "done",
         };
       case "progress":
         return {
           color: "text-yellow-700",
           backgroundColor: "bg-yellow-100",
-          text: "Progress",
+          text: "progress",
         };
-      case "queue":
+      case "queued":
         return {
           color: "text-red-600",
           backgroundColor: "bg-red-100",
@@ -95,16 +118,32 @@ const Documnets = ({ id, product, price, status }) => {
   return (
     <div>
       <div className="bg-white rounded-lg shadow-md p-6 mb-4 flex justify-between items-center ">
-        <h2 className="text-lg font-semibold ">{id}</h2>
-        <h2 className="text-lg font-semibold">{product}</h2>
-        <p className="text-gray-700">${price}</p>
+        <div className="flex space-x-36">
+        <h2 className="text-lg font-semibold ">{data.uniqueId}</h2>
+        <div className="w-40">
+          <h2 className="text-lg font-semibold  ">
+            {data.title.charAt(0).toUpperCase() +
+              data.title.slice(1).toLowerCase()}
+          </h2>
+        </div>
+        </div>
+        <div className="flex md:space-x-32">
+          <div className=" w-12">
+            <p className="text-gray-700 font-bold">${data.price}</p>
+          </div>
+          {ahead == null ? (
+            <Loading />
+          ) : (
+            <p className="text-gray-700 font-bold">{ahead}</p>
+          )}
 
-        <div
-          className={`flex w-20 h-10 justify-center items-center rounded-full px-3 py-2 text-sm ${curstatus.backgroundColor}`}
-        >
-          <p className={`text-sm  font-semibold ${curstatus.color}`}>
-            {curstatus.text}
-          </p>
+          <div
+            className={`flex w-20 h-10 justify-center items-center rounded-full px-3 py-2 text-sm ${curstatus.backgroundColor}`}
+          >
+            <p className={`text-sm  font-semibold ${curstatus.color}`}>
+              {curstatus.text}
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -113,10 +152,7 @@ const Documnets = ({ id, product, price, status }) => {
 
 Submitteddocuments.propTypes = {};
 Documnets.propTypes = {
-  id: PropTypes.number,
-  product: PropTypes.string,
-  price: PropTypes.number,
-  status: PropTypes.string,
+  data: PropTypes.object,
 };
 List_of_ele.propTypes = {
   data: PropTypes.array,

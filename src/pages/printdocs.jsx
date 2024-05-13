@@ -1,31 +1,60 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import Inputfile from "../small_components/inputfile";
 import Loading from "../small_components/loading";
 import Pdfviewer from "../small_components/pdfviewer";
 import axios from "axios";
-import { upload } from "../rotues";
+import { upload, userinfo } from "../rotues";
+import { useNavigate } from "react-router-dom";
 const Printdocs = () => {
   pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
   const [file, setfile] = useState(null);
   const [name, setname] = useState();
   const [pages, setpage] = useState(0);
   const [amount, setamount] = useState(null);
+  const [user, setuser] = useState(null);
+  const navigate = useNavigate();
+  
+
+  useEffect(() => {
+    async function check() {
+      const bearer_token = localStorage.getItem("authorization");
+      if (bearer_token) {
+        const { data } = await axios.get(userinfo, {
+          headers: { authorization: bearer_token },
+        });
+        if (data.data.role !== "user") {
+          console.log(data.data);
+          localStorage.removeItem("authorization");
+          navigate("/signin");
+        } else {
+          setuser(data.data);
+        }
+      } else {
+        navigate("/signin");
+      }
+    }
+    check();
+  }, []);
 
   async function submitform(event) {
     event.preventDefault();
     const formdata = new FormData();
-    formdata.append("title",name);
-    formdata.append("pdf",file);
+    formdata.append("title", name);
+    formdata.append("pdf", file);
+    formdata.append("price", amount);
+    formdata.append("id", user.id);
+
     try {
-      console.log(formdata);
-      const {data} = await axios.post(upload,formdata);
-      console.log(data);
-      
+      await axios.post(upload, formdata, {
+        title: name,
+        price: amount,
+        id: user.id,
+      });
+      navigate("/seedocumnets");
     } catch (error) {
       console.log(error);
     }
-
   }
   function onDocumentLoadSuccess({ numPages }) {
     setpage(numPages);

@@ -1,17 +1,18 @@
-import React from "react";
-import PropTypes from "prop-types";
 import axios from "axios";
 import { getPdf } from "../rotues";
-import {saveAs} from "file-saver"
+import { saveAs } from "file-saver";
 
-const Downloadbutton = () => {
+import PropTypes from 'prop-types';
+
+const Downloadbutton = ({ id }) => {
   async function onClick() {
-    const { data } = await axios.get(getPdf);
-    const buffer = data.data.data.data;
-    const base64String = buffer.toString('base64');
-    const blob = new Blob([...buffer], { type: "application/pdf" });
-    saveAs(blob,"output.pdf");
-    console.log(base64String);
+    const { data } = await axios.post(getPdf, { id: id });
+
+    const buffer = data.pdf.data.data;
+    const title = data.pdf.title;
+    const new_buffer = new Uint8Array(buffer);
+    const blob = new Blob([new_buffer], { type: "application/pdf" });
+    saveAs(blob, `${title}.pdf`);
   }
   return (
     <button
@@ -33,6 +34,9 @@ const Downloadbutton = () => {
   );
 };
 
-Downloadbutton.propTypes = {};
+Downloadbutton.propTypes = {
+  id : PropTypes.string
+  
+};
 
 export default Downloadbutton;
