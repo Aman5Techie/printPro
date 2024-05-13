@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 import Button from "../small_components/button";
 import axios from "axios";
 import { getAhead, getOrders } from "../rotues";
-import loading from "../assets/spinner.gif";
+import noOrder from "../assets/noorders.png";
+
 import Loading from "../small_components/loading";
 
 const Submitteddocuments = () => {
@@ -42,7 +43,7 @@ const Header = () => {
 };
 
 const List_of_ele = () => {
-  const [loaded, setloaded] = useState(null);
+  const [loaded, setloaded] = useState([]);
 
   useEffect(() => {
     const orders = async () => {
@@ -58,9 +59,9 @@ const List_of_ele = () => {
 
   return (
     <>
-      {loaded == null ? (
-        <div>
-          <img src={loading} alt="load" />
+      {loaded.length == 0 ? (
+        <div className="flex justify-center ">
+          <img className="h-80 " src={noOrder} alt="load" />
         </div>
       ) : (
         <div className="container mx-auto">

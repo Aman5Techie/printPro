@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-const Button2 = ({text,fnc}) => {
+const Button2 = ({ text, fnc }) => {
   return (
     <div>
       <button
@@ -15,8 +15,8 @@ const Button2 = ({text,fnc}) => {
 };
 
 Button2.propTypes = {
-    text : PropTypes.string,
-    fnc : PropTypes.func
+  text: PropTypes.string,
+  fnc: PropTypes.func,
 };
 
 export default Button2;

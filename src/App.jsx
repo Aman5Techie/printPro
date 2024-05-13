@@ -22,6 +22,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/printout" element={<Printout />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/*" element={<Login />} />
         </Routes>
       </BrowserRouter>
       <ToastContainer />

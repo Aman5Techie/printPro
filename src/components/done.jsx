@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import { allDone } from "../rotues";
 import loading from "../assets/spinner.gif";
-import NoOrder from "../assets/noorders.png";
+// import NoOrder from "../assets/noorders.png";
 const Done = () => {
   return (
     <div>
@@ -37,7 +37,7 @@ const Header = () => {
 };
 
 const List_of_ele = () => {
-  const [loaded, setloaded] = useState(null);
+  const [loaded, setloaded] = useState([]);
 
   useEffect(() => {
     const orders = async () => {
@@ -55,7 +55,7 @@ const List_of_ele = () => {
 
   return (
     <>
-      {loaded == null ? (
+      {loaded.length == 0 ? (
         <div>
           <img src={loading} alt="load" />
         </div>
