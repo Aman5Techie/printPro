@@ -5,6 +5,7 @@ import axios from "axios";
 import { userinfo } from "../rotues";
 import Button2 from "../small_components/button2";
 import Done from "../components/done";
+import Sidebar from "../components/sidebar";
 
 const Frontpage = () => {
   const navigate = useNavigate();
@@ -32,23 +33,30 @@ const Frontpage = () => {
   }, [navigate]);
 
   return (
-    <div>
-      <div className="flex ">
-        <Button2
-          fnc={() => {
-            clicked(0);
-          }}
-          text={"Orders"}
-        />
-        <Button2
-          fnc={() => {
-            clicked(1);
-          }}
-          text={"Done"}
-        />
+    <>
+      <div className="grid grid-cols-12">
+        <div className="bg-red-500 w-56 col-span-2">
+          <Sidebar />
+        </div>
+        <div className="col-span-10">
+          <div className="flex py-2 px-32">
+            <Button2
+              fnc={() => {
+                clicked(0);
+              }}
+              text={"Orders"}
+            />
+            <Button2
+              fnc={() => {
+                clicked(1);
+              }}
+              text={"Done"}
+            />
+          </div>
+          {btn == 0 ? <Submitteddocuments /> : <Done />}
+        </div>
       </div>
-      {btn == 0 ? <Submitteddocuments /> : <Done />}
-    </div>
+    </>
   );
 };
 

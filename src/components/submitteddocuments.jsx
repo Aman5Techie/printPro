@@ -6,6 +6,7 @@ import { getAhead, getOrders } from "../rotues";
 import noOrder from "../assets/noorders.png";
 
 import Loading from "../small_components/loading";
+import Sidebar from "./sidebar";
 
 const Submitteddocuments = () => {
   return (
@@ -19,8 +20,8 @@ const Submitteddocuments = () => {
 
 const Header = () => {
   return (
-    <div className="bg-gray-100 max-w-110 py-10 px-52  ">
-      <div className="max-w-4xl bg-white rounded-lg shadow-md mx-4 ">
+    <div className="bg-gray-100 max-w-110 border-black  px-32 max-h-full ">
+      <div className="max-w-6xl bg-white rounded-lg shadow-md mx-4 ">
         {/* Header */}
         <div className="bg-gray-800 text-white py-4 rounded-t-lg px-4">
           <div className="container mx-auto flex justify-between items-center">
@@ -81,10 +82,10 @@ const Documnets = ({ data }) => {
   useEffect(() => {
     setstatus(getStatusStyle(data.status));
     console.log(data);
-    const _ahead = async()=>{
-      const aheadObj = await axios.post(getAhead,{orderId : data._id})
+    const _ahead = async () => {
+      const aheadObj = await axios.post(getAhead, { orderId: data._id });
       setahead(aheadObj.data.items);
-    }
+    };
     _ahead();
   }, [data]);
 
@@ -120,13 +121,13 @@ const Documnets = ({ data }) => {
     <div>
       <div className="bg-white rounded-lg shadow-md p-6 mb-4 flex justify-between items-center ">
         <div className="flex space-x-36">
-        <h2 className="text-lg font-semibold ">{data.uniqueId}</h2>
-        <div className="w-40">
-          <h2 className="text-lg font-semibold  ">
-            {data.title.charAt(0).toUpperCase() +
-              data.title.slice(1).toLowerCase()}
-          </h2>
-        </div>
+          <h2 className="text-lg font-semibold ">{data.uniqueId}</h2>
+          <div className="w-40">
+            <h2 className="text-lg font-semibold  ">
+              {data.title.charAt(0).toUpperCase() +
+                data.title.slice(1).toLowerCase()}
+            </h2>
+          </div>
         </div>
         <div className="flex md:space-x-32">
           <div className=" w-12">
