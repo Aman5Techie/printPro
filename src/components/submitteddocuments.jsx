@@ -8,6 +8,16 @@ import noOrder from "../assets/noorders.png";
 import Loading from "../small_components/loading";
 import Sidebar from "./sidebar";
 
+const obj = [
+  { uniqueId: 2555 },
+  { uniqueId: 2555 },
+  { uniqueId: 2555 },
+  { uniqueId: 2555 },
+  { uniqueId: 2555 },
+  { uniqueId: 2555 },
+  { uniqueId: 2555 },
+  { uniqueId: 2588 },
+];
 const Submitteddocuments = () => {
   return (
     <>
@@ -20,7 +30,7 @@ const Submitteddocuments = () => {
 
 const Header = () => {
   return (
-    <div className="bg-gray-100 max-w-110 border-black  px-32 max-h-full ">
+    <div className="bg-gray-100 max-w-110  py-3 px-28 h-full ">
       <div className="max-w-6xl bg-white rounded-lg shadow-md mx-4 ">
         {/* Header */}
         <div className="bg-gray-800 text-white py-4 rounded-t-lg px-4">
@@ -65,7 +75,7 @@ const List_of_ele = () => {
           <img className="h-80 " src={noOrder} alt="load" />
         </div>
       ) : (
-        <div className="container mx-auto">
+        <div className="container h-80 overflow-scroll no-scrollbar  mx-auto">
           {loaded.map((obj, index) => {
             return <Documnets key={index} data={obj} />;
           })}
@@ -119,7 +129,7 @@ const Documnets = ({ data }) => {
   };
   return (
     <div>
-      <div className="bg-white rounded-lg shadow-md p-6 mb-4 flex justify-between items-center ">
+      <div className="bg-white  rounded-lg shadow-md p-6 mb-4 flex justify-between items-center ">
         <div className="flex space-x-36">
           <h2 className="text-lg font-semibold ">{data.uniqueId}</h2>
           <div className="w-40">

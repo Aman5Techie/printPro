@@ -1,6 +1,7 @@
 const userroute = "http://localhost:3000/api/v1/user";
 const contentroute = "http://localhost:3000/api/v1/content";
 const doneroute = "http://localhost:3000/api/v1/done";
+const userorderroute = "http://localhost:3000/api/v1/userorder";
 
 const signup = `${userroute}/signup`;
 const userinfo = `${userroute}/userinfo`;
@@ -14,7 +15,10 @@ const getPdf = `${contentroute}/getPdf`;
 const delOrder = `${contentroute}/delOrder`;
 const updateStatus = `${contentroute}/updateStatus`;
 
+const getStats = `${userorderroute}/getStats`;
+
 export {
+  getStats,
   updateStatus,
   delOrder,
   allOrders,
